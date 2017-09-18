@@ -29,18 +29,20 @@ An element for dialogs
 -->
 <dom-module id="nuxeo-dialog">
   <template>
-    <style include="paper-dialog-shared-styles"></style>
+    <style include="paper-dialog-shared-styles">
+      :host {
+        @apply --nuxeo-dialog;
+      }
 
-    <style>
-      :host > ::content .buttons {
-        @apply(--layout-horizontal);
-        @apply(--layout-justified);
+      :host > ::slotted(.buttons) {
+        @apply --layout-horizontal;
+        @apply --layout-justified;
         margin-top: 16px;
         background-color: var(--nuxeo-dialog-buttons-bar, white);
       }
     </style>
 
-    <content></content>
+    <slot></slot>
 
   </template>
 

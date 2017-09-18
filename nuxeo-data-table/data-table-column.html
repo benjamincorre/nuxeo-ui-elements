@@ -106,7 +106,7 @@
             if (custom && custom.parentElement) {
               // set dataHost to the context where template has been defined
               var column = custom.parentElement;
-              custom._rootDataHost = column.dataHost._rootDataHost || column.dataHost;
+              //custom._rootDataHost = column.dataHost._rootDataHost || column.dataHost;
               return custom;
             }
 
@@ -150,7 +150,7 @@
       ],
 
       _notifyTable: function(table, path, value) {
-        if (table.columns) {
+        if (table && table.columns) {
           var index = table.columns.indexOf(this);
           table.notifyPath('columns.' + index + '.' + path, value);
         }

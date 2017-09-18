@@ -90,7 +90,8 @@ limitations under the License.
   </style>
 </head>
 <body unresolved>
-  <template is="dom-bind">
+  <dom-bind>
+  <template>
 
     <div class="content-view">
 
@@ -134,9 +135,10 @@ limitations under the License.
     </div>
 
   </template>
+  </dom-bind>
 
   <script>
-    var t = document.querySelector('template');
+    var t = document.querySelector('dom-bind');
 
     t._thumbnail = function(doc) {
       if (doc && doc.uid) {

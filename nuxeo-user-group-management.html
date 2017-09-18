@@ -24,7 +24,7 @@ limitations under the License.
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-item/paper-icon-item.html">
 <link rel="import" href="../paper-toast/paper-toast.html">
@@ -95,17 +95,17 @@ Custom property | Description | Default
         padding-right: 8px;
       }
 
-      paper-menu {
+      paper-listbox {
         width: 130px;
         outline: none;
       }
 
-      paper-menu paper-icon-item iron-icon {
+      paper-listbox paper-icon-item iron-icon {
         width: 1.5rem;
         height: 1.5rem;
       }
 
-      paper-menu paper-icon-item:hover {
+      paper-listbox paper-icon-item:hover {
         background: var(--nuxeo-container-hover, #fafafa);
         cursor: pointer;
       }
@@ -123,7 +123,7 @@ Custom property | Description | Default
                   <iron-icon icon="nuxeo:add"></iron-icon>
                   <div>[[i18n('userGroupManagement.new.usergroup')]]</div>
                 </paper-button>
-                <paper-menu no-animations id="menu" class="dropdown-content" selectable="item">
+                <paper-listbox no-animations id="menu" class="dropdown-content" selectable="item">
                   <paper-icon-item name="user" on-tap="_createUser">
                     <iron-icon icon="nuxeo:user" item-icon></iron-icon>
                     <span>[[i18n('userGroupManagement.new.user')]]</span>
@@ -132,7 +132,7 @@ Custom property | Description | Default
                     <iron-icon icon="nuxeo:group" item-icon></iron-icon>
                     <span>[[i18n('userGroupManagement.new.group')]]</span>
                   </paper-icon-item>
-                </paper-menu>
+                </paper-listbox>
               </paper-menu-button>
             </div>
           </template>

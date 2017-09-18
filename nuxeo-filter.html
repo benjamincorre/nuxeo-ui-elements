@@ -226,7 +226,7 @@ limitations under the License.
 
     _clear: function() {
       if (this._instance) {
-        var c$ = this._instance._children;
+        var c$ = this._instance.children;
         if (c$ && c$.length) {
           // use first child parent, for case when dom-if may have been detached
           var parent = Polymer.dom(Polymer.dom(c$[0]).parentNode);

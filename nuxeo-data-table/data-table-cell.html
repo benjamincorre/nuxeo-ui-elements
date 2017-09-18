@@ -22,7 +22,7 @@
         display: none;
       }
     </style>
-    <content></content>
+    <slot></slot>
   </template>
   <script>
     Polymer({
@@ -59,6 +59,7 @@
                   '_widthChanged(width)'],
 
       attached: function() {
+        /*
         if (!Polymer.Settings.useNativeShadow) {
           // cell is supposed to be placed outside the local dom of iron-data-table.
           Polymer.StyleTransformer.dom(this, 'iron-data-table', this._scopeCssViaAttr, true);
@@ -66,6 +67,7 @@
             Polymer.StyleTransformer.dom(this, this.domHost.tagName.toLowerCase(), this._scopeCssViaAttr, false);
           }
         }
+        */
       },
 
       _alignRightChanged: function(alignRight) {

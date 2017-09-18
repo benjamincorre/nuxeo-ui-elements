@@ -50,7 +50,8 @@ limitations under the License.
   </style>
 </head>
 <body>
-<template is="dom-bind">
+<dom-bind>
+<template>
 
   <div class="layout horizontal">
   <paper-card heading="Document">
@@ -195,8 +196,9 @@ limitations under the License.
   </ul>
 
 </template>
+</dom-bind>
 <script>
-  var t = document.querySelector('template');
+  var t = document.querySelector('dom-bind');
 
   // default document properties
   t.title = 'Title';

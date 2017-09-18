@@ -26,10 +26,8 @@ limitations under the License.
   <link rel="import" href="../../nuxeo-document-permissions/nuxeo-document-permissions.html">
 </head>
 <body>
-  <template is="dom-bind">
-    <nuxeo-connection url="http://localhost:8080/nuxeo"></nuxeo-connection>
-    <h1>Permissions for /default-domain</h1>
-    <nuxeo-document-permissions doc-path="/default-domain"></nuxeo-document-permissions>
-  </template>
+  <nuxeo-connection url="http://localhost:8080/nuxeo"></nuxeo-connection>
+  <h1>Permissions for /default-domain</h1>
+  <nuxeo-document-permissions doc-path="/default-domain"></nuxeo-document-permissions>
 </body>
 </html>

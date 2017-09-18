@@ -22,38 +22,36 @@ limitations under the License.
 <!-- Part of `nuxeo-tree`-->
 <dom-module id="nuxeo-tree-node">
   <template>
-    <style is="custom-style">
+    <style>
       :host {
         display: block;
-        @apply(--nuxeo-tree-node-theme);
+        @apply --nuxeo-tree-node-theme;
       }
 
-      ::content iron-collapse {
+      iron-collapse {
         padding-left: 1em;
-        @apply(--nuxeo-tree-children-theme);
+        @apply --nuxeo-tree-children-theme;
       }
 
-      ::content .more {
-        @apply(--nuxeo-tree-node-more-theme);
+      .more {
+        @apply --nuxeo-tree-node-more-theme;
       }
 
-      ::content #content {
+      #content {
         position: relative;
         margin: .1rem 0 .2rem;
       }
 
-      ::content #content > iron-icon {
+      #content > iron-icon {
         margin-top: -0.25rem;
       }
 
-      ::content span iron-icon {
+      ::slotted(*) span iron-icon {
         width: .95rem;
         margin: 0 .1rem .3rem 0;
       }
 
     </style>
-
-    <content></content>
 
   </template>
   <script>
@@ -149,7 +147,9 @@ limitations under the License.
           }
 
           // templatize must be called once before stamp is called
-          this.templatize(this.template);
+          if (!this.template.__templatizeOwner) {
+            this.templatize(this.template, true);
+          }
           // stamp and prepare bindings
           this._instance = this.stamp({});
           this._instance.item = this.data;
@@ -190,7 +190,7 @@ limitations under the License.
             for (var i = 0; i < items.length; i++) {
               var el = document.createElement('nuxeo-tree-node');
               el.controller = this.controller;
-              el.template = this.template;
+              el.template = this.template.cloneNode(true);
               el.nodeKey = this.nodeKey;
               el.dataHost = this._instance._rootDataHost;
               el.data = items[i];
@@ -240,7 +240,7 @@ limitations under the License.
       },
 
       _setupToggleListener: function() {
-        this._flushTemplates();
+        // this._flushTemplates();
         var selectElts = Polymer.dom(this).querySelector('#content').querySelectorAll('[select]');
         for (var i = 0; i < selectElts.length; i++) {
           this.listen(selectElts[i], 'tap', '_selectNode');
@@ -261,7 +261,7 @@ limitations under the License.
       },
 
       _teardownInstance: function() {
-        var children = this._instance._children;
+        var children = this._instance.children;
         if (children && children.length) {
           var parent = Polymer.dom(Polymer.dom(children[0]).parentNode);
           for (var i = 0; i < children.length; i++) {
