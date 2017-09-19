@@ -105,6 +105,8 @@ controller = {
         @apply --nuxeo-tree-theme;
       }
     </style>
+
+    <slot></slot>
   </template>
   <script>
     Polymer({
@@ -136,30 +138,25 @@ controller = {
         '_update(data, controller)'
       ],
 
-      attached: function() {
-        var template = Polymer.dom(this).querySelector('template');
-        if (this._root) {
-          Polymer.dom(this).removeChild(this._root);
-        }
-        this._root = document.createElement('nuxeo-tree-node');
-        this._root.id = 'root';
-        this._root.template = template.cloneNode(true);
-        Polymer.dom(this).appendChild(this._root);
-      },
-
       /**
       * Initializes the tree whenever the data and/or controller changes.
       */
       _update: function() {
-        if (this._root && this.data && this.controller) {
+        if (this.data && this.controller) {
+          var template = Polymer.dom(this).querySelector('template');
+          if (this._root) {
+            Polymer.dom(this).removeChild(this._root);
+          }
+          this._root = document.createElement('nuxeo-tree-node');
+          this._root.id = 'root';
+          this._root.template = template;
           this._root.dataHost = this.dataHost;
           this._root.controller = this.controller;
           this._root.nodeKey = this.nodeKey;
           this._root.data = this.data;
           this._root.dataset[this.nodeKey] = this.data[this.nodeKey];
-          
+          Polymer.dom(this).appendChild(this._root);
           this._root.open();
-          Polymer.dom.flush();
         }
       },
 

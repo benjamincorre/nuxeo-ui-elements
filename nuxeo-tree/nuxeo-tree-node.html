@@ -28,30 +28,32 @@ limitations under the License.
         @apply --nuxeo-tree-node-theme;
       }
 
-      iron-collapse {
+      ::slotted(iron-collapse) {
         padding-left: 1em;
         @apply --nuxeo-tree-children-theme;
       }
 
-      .more {
+      ::slotted(.more) {
         @apply --nuxeo-tree-node-more-theme;
       }
 
-      #content {
+      ::slotted(#content) {
         position: relative;
         margin: .1rem 0 .2rem;
       }
 
-      #content > iron-icon {
+      ::slotted(#content iron-icon) {
         margin-top: -0.25rem;
       }
 
-      ::slotted(*) span iron-icon {
+      ::slotted(span iron-icon) {
         width: .95rem;
         margin: 0 .1rem .3rem 0;
       }
 
     </style>
+
+    <slot></slot>
 
   </template>
   <script>
@@ -102,6 +104,11 @@ limitations under the License.
         isNextAvailable: {
           type: Boolean,
           value: false
+        },
+
+        _parentModel: {
+          type: Boolean,
+          value: true
         }
       },
 
@@ -145,11 +152,9 @@ limitations under the License.
             this._teardownInstance();
             this._fetchChildren();
           }
-
+          this.template.__templatizeOwner = null; // XXX: find a way to remove this line
           // templatize must be called once before stamp is called
-          if (!this.template.__templatizeOwner) {
-            this.templatize(this.template, true);
-          }
+          this.templatize(this.template, true);
           // stamp and prepare bindings
           this._instance = this.stamp({});
           this._instance.item = this.data;
@@ -190,7 +195,7 @@ limitations under the License.
             for (var i = 0; i < items.length; i++) {
               var el = document.createElement('nuxeo-tree-node');
               el.controller = this.controller;
-              el.template = this.template.cloneNode(true);
+              el.template = this.template;
               el.nodeKey = this.nodeKey;
               el.dataHost = this._instance._rootDataHost;
               el.data = items[i];
@@ -240,7 +245,7 @@ limitations under the License.
       },
 
       _setupToggleListener: function() {
-        // this._flushTemplates();
+        Polymer.dom.flush();
         var selectElts = Polymer.dom(this).querySelector('#content').querySelectorAll('[select]');
         for (var i = 0; i < selectElts.length; i++) {
           this.listen(selectElts[i], 'tap', '_selectNode');
