@@ -75,10 +75,9 @@ An element for dialogs
         'iron-overlay-canceled': '_closed'
       },
 
-      _opened: function() {
-        if (this.reparent && this.parentElement !== document.body) {
-          this._parent = this.parentElement;
-          document.body.appendChild(this);
+      _opened: function(e) {
+        if (this.reparent && e.target.withBackdrop) {
+          e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
         }
       },
 
