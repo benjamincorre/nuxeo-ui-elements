@@ -1,0 +1,121 @@
+<!--
+@license
+(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../nuxeo-routing-behavior.html">
+<link rel="import" href="nuxeo-tag.html">
+
+<!--
+An element for showing a user entity with a tooltip.
+
+Example:
+
+    <nuxeo-user-tag user="[[user]]"></nuxeo-user-tag>
+
+@group Nuxeo UI
+@element nuxeo-user-tag
+@demo demo/widgets/index.html
+-->
+<dom-module id="nuxeo-user-tag">
+  <template>
+
+    <nuxeo-tag>
+      <template is="dom-if" if="[[_hasLink(user)]]">
+        <a href$="[[_href(user)]]">[[_name(user)]]</a>
+      </template>
+      <template is="dom-if" if="[[!_hasLink(user)]]">
+        [[_name(user)]]
+      </template>
+      <template is="dom-if" if="[[_isEntity(user)]]">
+        <paper-tooltip id="tooltip" position="top" offset="0" animation-delay="0">
+          [[_id(user)]]<br>[[_email(user)]]
+        </paper-tooltip>
+      </template>
+    </nuxeo-tag>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-user-tag',
+      behaviors: [Nuxeo.RoutingBehavior],
+      properties: {
+
+        /**
+         * User entity or a string
+         */
+        user: Object,
+
+        /**
+         * Disable link
+         */
+        disabled: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      ready: function() {
+        if (this.$.tooltip) {
+          document.body.appendChild(this.$.tooltip);
+        }
+      },
+
+      _isEntity: function(user) {
+        return user && user['entity-type'] && (user['entity-type'] === 'user'
+          || (user['entity-type'] === 'document' && user.type === 'user')) && user.properties;
+      },
+
+      _id: function(user) {
+        if (user) {
+          var id = user.id || user.uid;
+          return id ? id : user.replace('user:', '');
+        }
+      },
+
+      _name: function(user) {
+        if (this._isEntity(user)) {
+          var firstName = user.properties.firstName || user.properties["user:firstName"];
+          var lastName = user.properties.lastName || user.properties["user:lastName"];
+          var email = user.properties.email || user.properties["user:email"];
+          return (firstName || lastName) ? firstName + ' ' + lastName : email;
+        } else {
+          return this._id(user);
+        }
+      },
+
+      _email: function(user) {
+        if (this._isEntity(user)) {
+          var email = user.properties.email || user.properties["user:email"];
+          return email !== this._id(user) ? email : '';
+        } else {
+          return '';
+        }
+      },
+
+      _href: function(user) {
+        return this.urlFor('user', this._id(user));
+      },
+
+      _hasLink: function(user) {
+        return !(this.disabled || (this._name(user) === 'system'));
+      }
+
+    });
+  </script>
+</dom-module>

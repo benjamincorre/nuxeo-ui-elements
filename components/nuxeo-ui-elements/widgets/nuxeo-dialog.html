@@ -1,0 +1,91 @@
+<!--
+@license
+(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../../paper-dialog-behavior/paper-dialog-shared-styles.html">
+
+<!--
+An element for dialogs
+
+@group Nuxeo UI
+@element nuxeo-dialog
+@demo demo/widgets/index.html
+-->
+<dom-module id="nuxeo-dialog">
+  <template>
+    <style include="paper-dialog-shared-styles"></style>
+
+    <style>
+      :host > ::content .buttons {
+        @apply(--layout-horizontal);
+        @apply(--layout-justified);
+        margin-top: 16px;
+        background-color: var(--nuxeo-dialog-buttons-bar, white);
+      }
+    </style>
+
+    <content></content>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-dialog',
+      properties: {
+
+        /**
+         * Move dialog to BODY when opening it.
+         */
+        reparent: {
+          type: Boolean,
+          value: false
+        },
+
+        _parent: {
+          type: Object
+        }
+      },
+
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
+      listeners: {
+        'iron-overlay-opened': '_opened',
+        'iron-overlay-closed': '_closed',
+        'iron-overlay-canceled': '_closed'
+      },
+
+      _opened: function() {
+        if (this.reparent && this.parentElement !== document.body) {
+          this._parent = this.parentElement;
+          document.body.appendChild(this);
+        }
+      },
+
+      _closed: function() {
+        if (this.reparent && this._parent) {
+          this._parent.appendChild(this);
+        }
+      }
+    });
+  </script>
+</dom-module>
+
