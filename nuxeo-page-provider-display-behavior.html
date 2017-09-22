@@ -185,7 +185,7 @@ limitations under the License.
           }
         } else if (nxProvider) {
           this.listen(this.nxProvider, 'update', '_updateResults');
-          this.fetch(0, this.nxProvider.pageSize, true);
+          this.fetch();
         }
       },
 
@@ -194,17 +194,15 @@ limitations under the License.
       },
 
       _resetResults: function() {
-        if (!this._hasPageProvider()) {
-          return;
+        if (this._hasPageProvider()) {
+          this._reset(0);
         }
-        this.reset(0);
       },
 
       _updateResults: function() {
-        if (!this._hasPageProvider()) {
-          return;
+        if (this._hasPageProvider()) {
+          this.size = this.items.length;
         }
-        this.size = this.items.length;
       },
 
       selectItem: function(item) {
@@ -265,82 +263,78 @@ limitations under the License.
       },
 
       _sortDirectionChanged: function(e) {
-        if (!this._hasPageProvider()) {
-          return;
-        }
-
-        var notFound = true;
-        for (var i = 0; i < this.sortOrder.length; i++) {
-          if (this.sortOrder[i].path === e.detail.path) {
-            if (e.detail.direction) {
-              this.set('sortOrder.' + i + '.direction', e.detail.direction);
-            } else {
-              this.splice('sortOrder', i, 1);
+        if (this._hasPageProvider()) {
+          var notFound = true;
+          for (var i = 0; i < this.sortOrder.length; i++) {
+            if (this.sortOrder[i].path === e.detail.path) {
+              if (e.detail.direction) {
+                this.set('sortOrder.' + i + '.direction', e.detail.direction);
+              } else {
+                this.splice('sortOrder', i, 1);
+              }
+              notFound = false;
+              break;
             }
-            notFound = false;
-            break;
           }
-        }
-        if (notFound) {
-          this.push('sortOrder', {
-            path: e.detail.path,
-            direction: e.detail.direction
-          });
-        }
+          if (notFound) {
+            this.push('sortOrder', {
+              path: e.detail.path,
+              direction: e.detail.direction
+            });
+          }
 
-        // TODO make it simpler
-        var tmpSort = {};
-        if (this.sortOrder && this.sortOrder.length > 0) {
-          this.sortOrder.forEach(function(sortItem) {
-            tmpSort[sortItem.path] = sortItem.direction;
-          });
-        }
-        if (JSON.stringify(this._ppSort) !== JSON.stringify(tmpSort)) {
-          this._ppSort = tmpSort;
-          this.nxProvider.sort = this._ppSort;
-          if (!this.nxProvider.auto) {
-            this.fetch(0, this.nxProvider.pageSize, true);
+          // TODO make it simpler
+          var tmpSort = {};
+          if (this.sortOrder && this.sortOrder.length > 0) {
+            this.sortOrder.forEach(function(sortItem) {
+              tmpSort[sortItem.path] = sortItem.direction;
+            });
+          }
+          if (JSON.stringify(this._ppSort) !== JSON.stringify(tmpSort)) {
+            this._ppSort = tmpSort;
+            this.nxProvider.sort = this._ppSort;
+            if (!this.nxProvider.auto) {
+              this.fetch();
+            }
           }
         }
       },
 
       _onColumnFilterChanged: function(e) {
-        if (!this._hasPageProvider()) {
-          return;
-        }
-
-        var notFound = true;
-        for (var i = 0; i < this.filters.length; i++) {
-          if (this.filters[i].path === e.detail.filterBy) {
-            if (e.detail.value.length === 0) {
-              this.splice('filters', i, 1);
-            } else {
-              this.set('filters.' + i + '.value', e.detail.value);
+        if (this._hasPageProvider()) {
+          var notFound = true;
+          for (var i = 0; i < this.filters.length; i++) {
+            if (this.filters[i].path === e.detail.filterBy) {
+              if (e.detail.value.length === 0) {
+                this.splice('filters', i, 1);
+              } else {
+                this.set('filters.' + i + '.value', e.detail.value);
+              }
+              notFound = false;
+              break;
             }
-            notFound = false;
-            break;
           }
-        }
 
-        if (notFound && e.detail.value.length !== 0) {
-          this.push('filters', {
-            path: e.detail.filterBy,
-            value: e.detail.value,
-            name: e.detail.name
-          });
-        }
+          if (notFound && e.detail.value.length !== 0) {
+            this.push('filters', {
+              path: e.detail.filterBy,
+              value: e.detail.value,
+              name: e.detail.name
+            });
+          }
 
-        if (this.nxProvider.params[e.detail.filterBy] && e.detail.value.length === 0) {
-          delete this.nxProvider.params[e.detail.filterBy];
-          this.fetch(0, this.nxProvider.pageSize, true);
-        } else {
-          if (e.detail.value.length > 0) {
-            if (e.detail.filterBy === 'title' || e.detail.filterBy === 'ecm_fulltext') {
-              this.nxProvider.params[e.detail.filterBy] = e.detail.value + '*';
-            } else {
-              this.nxProvider.params[e.detail.filterBy] = e.detail.value;
+          if (this.nxProvider.params[e.detail.filterBy] && e.detail.value.length === 0) {
+            delete this.nxProvider.params[e.detail.filterBy];
+            this.fetch();
+          } else {
+            if (e.detail.value.length > 0) {
+              if (e.detail.filterBy === 'title' || e.detail.filterBy === 'ecm_fulltext') {
+                this.nxProvider.params[e.detail.filterBy] = e.detail.value + '*';
+              } else {
+                this.nxProvider.params[e.detail.filterBy] = e.detail.value;
+              }
+              this.fetch();
             }
-            this.fetch(0, this.nxProvider.pageSize, true);
           }
         }
       },
@@ -364,7 +358,7 @@ limitations under the License.
       },
 
       _quickFilterChanged: function() {
-        this.fetch(0, this.nxProvider.pageSize, true);
+        this.fetch();
       },
 
       _updateFlags: function() {
@@ -380,7 +374,15 @@ limitations under the License.
         }
       },
 
+      /**
+       * This function can be overridden by elements that includes this behavior.
+       * That allows to use different items array initialization.
+       */
       reset: function(size) {
+        this._reset(size);
+      },
+
+      _reset: function(size) {
         if (size) {
           var arr = new Array(size);
           for (var i = 0; i < arr.length; i++) {
@@ -396,13 +398,48 @@ limitations under the License.
       },
 
       /**
+       * This function can be overridden by elements that includes this behavior.
+       * That allows to use either range OR page based fetch APIs.
+       * Default behavior is range base fetching.
+       */
+      fetch: function() {
+        return this._fetchRange(0, this.nxProvider.pageSize, true);
+      },
+
+      /**
+       * Fetch a page and push the results to the items array.
+       *
+       * @param page Page index to fetch
+       * @param pageSize Number of results per page
+       */
+      _fetchPage: function(page, pageSize) {
+        if (this._hasPageProvider()) {
+          if (page) {
+            this.nxProvider.page = page;
+            if (page === 1) {
+              this.reset();
+            }
+          }
+          if (pageSize) {
+            this.nxProvider.pageSize = pageSize;
+          }
+          this.nxProvider.offset = 0;
+          return this.nxProvider.fetch().then(function (response) {
+            for (var i = 0; i < response.entries.length; i++) {
+              this.push('items', response.entries[i]);
+            }
+          }.bind(this));
+        }
+      },
+
+      /**
        * Fetch a range of items (and fill the items array accordingly)
        *
        * @param firstIndex First index to fetch
        * @param lastIndex Last index to fetch
        * @param clear Clear items array
        */
-      fetch: function(firstIndex, lastIndex, clear) {
+      _fetchRange: function(firstIndex, lastIndex, clear) {
         if (this._hasPageProvider()) {
 
           if (!firstIndex && !lastIndex && !clear) {
@@ -413,6 +450,7 @@ limitations under the License.
 
           // update items array based on first and last visible indexes
           this.nxProvider.offset = firstIndex;
+          this.nxProvider.page = 1;
           this.nxProvider.pageSize = (lastIndex - firstIndex) + 1;
           return this.nxProvider.fetch().then(function(response) {
             if (!response) {
@@ -464,7 +502,7 @@ limitations under the License.
 
       _scrollChanged: function() {
         this.debounce('debounce-scroll-changed', function() {
-          this.fetch(this.$.list.firstVisibleIndex, this.$.list.lastVisibleIndex);
+          this._fetchRange(this.$.list.firstVisibleIndex, this.$.list.lastVisibleIndex);
         }.bind(this), this.scrollThrottle > 0 ? this.scrollThrottle : 1);
       }
 
