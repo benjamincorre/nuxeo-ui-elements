@@ -403,7 +403,9 @@ limitations under the License.
        * Default behavior is range base fetching.
        */
       fetch: function() {
-        return this._fetchRange(0, this.nxProvider.pageSize, true);
+        if (this._hasPageProvider()) {
+          return this._fetchRange(0, this.nxProvider.pageSize, true);
+        }
       },
 
       /**
