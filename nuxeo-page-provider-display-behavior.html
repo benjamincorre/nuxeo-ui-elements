@@ -169,7 +169,8 @@ limitations under the License.
       observers: [
         '_updateFlags(size, loading)',
         '_nxProviderChanged(nxProvider)',
-        '_selectionEnabledChanged(selectionEnabled, selectOnTap)'
+        '_selectionEnabledChanged(selectionEnabled, selectOnTap)',
+        '_itemsChanged(items.*)'
       ],
 
       listeners: {
@@ -185,7 +186,6 @@ limitations under the License.
           }
         } else if (nxProvider) {
           this.listen(this.nxProvider, 'update', '_updateResults');
-          this.fetch();
         }
       },
 
@@ -203,6 +203,10 @@ limitations under the License.
         if (this._hasPageProvider()) {
           this.size = this.items.length;
         }
+      },
+
+      _itemsChanged: function() {
+        this._isEmpty = !(this.items && this.items.length > 0);
       },
 
       selectItem: function(item) {
@@ -363,6 +367,7 @@ limitations under the License.
 
       _updateFlags: function() {
         if (!this.loading) {
+          this.size = this.items && this.items.length > 0 ? this.items.length : 0;
           var selectedItems = this.$.list.selectedItems;
           this._isSelectAllIndeterminate = selectedItems
             && selectedItems.length > 0
