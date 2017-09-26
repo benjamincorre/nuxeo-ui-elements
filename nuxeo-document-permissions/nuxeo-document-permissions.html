@@ -49,6 +49,7 @@ An element providing document permissions management
 
     <style>
       .bubbleBox {
+        @apply --nuxeo-document-permissions-box;
         @apply --paper-card;
         background-color: #fff;
         box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
@@ -57,6 +58,7 @@ An element providing document permissions management
         margin-bottom: 16px;
       }
       .bubbleHeader {
+        @apply --nuxeo-document-permissions-header;
         @apply --layout-horizontal;
         @apply --layout-center;
         overflow: hidden;
@@ -64,6 +66,7 @@ An element providing document permissions management
         padding: 16px 0;
       }
       .bubbleHeader h3 {
+        @apply --nuxeo-document-permissions-header-title;
         @apply --layout-flex;
         float: left;
         line-height: normal;
@@ -145,7 +148,7 @@ An element providing document permissions management
       <div>
         <nuxeo-document-acl-table doc="[[doc]]" acl-filter="_excludeInheritedAcls" ace-filter="_excludeExternalUserAces"
           show-actions="[[_hasPermission(doc,'Everything')]]">
-          <p class="emptyResult">[[i18n('documentPermissions.noLocalPermissions')]]</p>
+          <p slot="emptyResult">[[i18n('documentPermissions.noLocalPermissions')]]</p>
         </nuxeo-document-acl-table>
       </div>
     </div>

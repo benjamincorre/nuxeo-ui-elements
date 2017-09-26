@@ -1,7 +1,7 @@
 <!-- Part of `nuxeo-data-table` -->
 <dom-module id="nuxeo-data-table-row">
   <template>
-    <style is="custom-style">
+    <style>
       :host {
         display: flex;
         flex-direction: column;
@@ -60,7 +60,7 @@
       <slot name="detail"></slot>
     </div>
     <div class="actions">
-      <slot name="action>"
+      <slot name="action"></slot>
     </div>
   </template>
   <script>
@@ -96,10 +96,11 @@
             this._contentElement = document.createElement('slot');
             this._contentElement.setAttribute('name', 'item' + id);
             Polymer.dom(item).appendChild(this._contentElement);
-            this.slot = 'item' + id;
             item._rowId = id;
 
             Polymer.dom(this.domHost).appendChild(this);
+
+            this.slot = 'item' + id;
             // reset the cached value for shady root owner to make this.domHost
             // return correct value.
             this._ownerShadyRoot = undefined;

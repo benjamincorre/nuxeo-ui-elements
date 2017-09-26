@@ -50,6 +50,13 @@
     },
 
     _templatize: function(template) {
+
+      if(!template) {
+        return;
+      }
+
+      delete template.__templatizeOwner;
+
       this.templatize(template);
 
       // fix _rootDataHost to the context where template has been defined

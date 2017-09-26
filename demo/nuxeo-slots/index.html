@@ -119,6 +119,12 @@ limitations under the License.
       </template>
     </nuxeo-slot-content>
 
+    <nuxeo-slot-content name="item" slot="LIST">
+        <template>
+          <span>ITEM</span>
+        </template>
+      </nuxeo-slot-content>
+
     <nuxeo-slot-content name="yours" order="[[order]]" slot="[[category]]" disabled$="[[disabled]]">
       <template>
         <nuxeo-alert-button message="[[label]]">[[label]]</nuxeo-alert-button>

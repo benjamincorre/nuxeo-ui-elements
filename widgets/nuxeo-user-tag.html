@@ -33,10 +33,18 @@ Example:
 -->
 <dom-module id="nuxeo-user-tag">
   <template>
+    <style>
+      a {
+        @apply --nuxeo-link;
+      }
 
+      a:hover {
+        @apply --nuxeo-link-hover;
+      }
+    </style>
     <nuxeo-tag>
       <template is="dom-if" if="[[_hasLink(user)]]">
-        <a href$="[[_href(user)]]">[[_name(user)]]</a>
+        <a href$="[[_href(user, router)]]">[[_name(user)]]</a>
       </template>
       <template is="dom-if" if="[[!_hasLink(user)]]">
         [[_name(user)]]

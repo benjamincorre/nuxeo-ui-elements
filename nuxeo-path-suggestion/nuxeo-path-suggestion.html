@@ -41,21 +41,21 @@ Custom property | Description | Default
 <dom-module id="nuxeo-path-suggestion">
   <template>
     <style>
-        :host {
-          display: block;
-        --paper-typeahead-results: {
+        
+        --paper-typeahead-results {
           background-color: white;
           @apply --nuxeo-path-suggestion-results;
-          };
-        --paper-typeahead-result: {
+        };
+
+        --paper-typeahead-result {
           display: block;
           overflow: hidden;
           white-space: nowrap;
           direction:rtl;
           text-align: left;
           @apply --nuxeo-path-suggestion-result;
-          };
-        }
+        };
+        
         paper-typeahead:focus {
           outline: none;
           @apply --nuxeo-path-suggestion-focus;

@@ -273,7 +273,7 @@ Example:
     </div>
     <paper-spinner-lite active></paper-spinner-lite>
 
-    <slot></slot>
+    <slot id="columns"></slot>
     <!-- content select="template[is=row-detail]"></content -->
 
     <nuxeo-dialog id="dialog">
@@ -430,7 +430,7 @@ Example:
 
           if (info.addedNodes.filter(hasColumns).length > 0 ||
             info.removedNodes.filter(hasColumns).length > 0) {
-            this.set('columns', this.getContentChildren('[select=nuxeo-data-table-column]'));
+            this.set('columns', this.$.columns.assignedNodes().filter(hasColumns));
             this._backupColumnsState();
             this.notifyResize();
           }
