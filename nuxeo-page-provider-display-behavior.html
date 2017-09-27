@@ -501,6 +501,13 @@ limitations under the License.
             // quick filters
             this.quickFilters = this.nxProvider.quickFilters;
 
+            // XXX force scroll to top or bottom (when scrolling to first or last item)
+            if (this.$.list._scrollTop === 0) {
+              this.scrollToIndex(0);
+            } else if (this.$.list._scrollBottom === this.$.list._scrollHeight) {
+              this.scrollToIndex(this.items.length - 1);
+            }
+
             this.fire('nuxeo-page-loaded');
 
           }.bind(this));
